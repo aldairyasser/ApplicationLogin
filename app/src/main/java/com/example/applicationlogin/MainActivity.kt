@@ -17,16 +17,19 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navController,
-                startDestination = "Login" // Pantalla inicial
+                startDestination = Screen.Login.route // Pantalla inicial
             ) {
-                composable("Login") {
+                composable(Screen.Login.route) {
                     LoginScreen(
-                        onSuccess = { userName ->
-                            navController.navigate("Chat")
+                        onSuccess = { user ->
+                            navController.navigate(Screen.Chat.nameChat(user))
                         }
                     )
                 }
-                composable("Chat") { ChatScreen() }
+                composable(Screen.Chat.route) { backStackEntry ->
+                    val user = backStackEntry.arguments?.getString("user") ?: "Usuario"
+                    ChatScreen(user = user)
+                }
             }
         }
     }

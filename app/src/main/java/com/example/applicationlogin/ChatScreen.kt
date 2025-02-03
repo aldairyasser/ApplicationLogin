@@ -34,27 +34,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Preview
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ChatScreen() {
+fun ChatScreen(user :String) {
     Scaffold(
-        topBar = { TopBarChat() },
+        topBar = { TopBarChat(user) },
         content = { ContentChat() }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarChat() {
+fun TopBarChat(user: String) {
     TopAppBar(
         title = {
             Text(
-                text = "CHAT SCREEN",
+                text = "$user Chat",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 15.dp),
