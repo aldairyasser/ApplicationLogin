@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.sp
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(onSuccess: (userName: String) -> Unit) {
+fun LoginScreen(onSuccess: (user: String) -> Unit) {
     Scaffold(topBar = { TopBar() }, content = {
         ContentLogin(onSuccess = {
             onSuccess(it)
@@ -68,7 +68,7 @@ fun TopBar() {
 }
 
 @Composable
-fun ContentLogin(onSuccess: (userName: String) -> Unit) {
+fun ContentLogin(onSuccess: (user: String) -> Unit) {
     var user by rememberSaveable { mutableStateOf("") }
     var pass by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
@@ -138,7 +138,7 @@ fun ContentLogin(onSuccess: (userName: String) -> Unit) {
         )
         ElevatedButton(
             onClick = {
-                val isValid = LoginValidation.validateUser(user, pass)
+                val isValid = LoginValidation.validateUser(pass)
                 if (isValid) {
                     Toast.makeText(context, "BIENVENIDO", Toast.LENGTH_LONG).show()
                     onSuccess(user) //Le pasamos el nombre de la ruta a la que deseamos ir.
