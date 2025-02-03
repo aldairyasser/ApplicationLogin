@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ApplicationLogin</string>
+    <string name="insert_your_username">Insert your username</string>
 </resources>
