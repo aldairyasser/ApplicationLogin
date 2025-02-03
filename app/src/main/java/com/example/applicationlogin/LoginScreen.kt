@@ -40,13 +40,12 @@ import androidx.compose.ui.unit.sp
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(onSuccess: (userName:String) -> Unit) {
-    Scaffold(
-        topBar = { TopBar() },
-        content = { ContentLogin(onSuccess = {
+fun LoginScreen(onSuccess: (userName: String) -> Unit) {
+    Scaffold(topBar = { TopBar() }, content = {
+        ContentLogin(onSuccess = {
             onSuccess(it)
-        }) }
-    )
+        })
+    })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,26 +61,28 @@ fun TopBar() {
                 textAlign = TextAlign.Center,
                 fontSize = 35.sp
             )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Black,
-            titleContentColor = Color.White
+        }, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Black, titleContentColor = Color.White
         )
     )
 }
 
 @Composable
-fun ContentLogin(onSuccess: (userName:String) -> Unit) {
+fun ContentLogin(onSuccess: (userName: String) -> Unit) {
     var user by rememberSaveable { mutableStateOf("") }
     var pass by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.LightGray)) {
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .size(125.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.LightGray)
+    ) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(125.dp)
+        )
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -89,68 +90,71 @@ fun ContentLogin(onSuccess: (userName:String) -> Unit) {
             painter = painterResource(id = R.drawable.user),
             contentDescription = "userIcon"
         )
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .size(100.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(modifier = Modifier
+        Spacer(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                .size(100.dp)
+        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                     value = user,
                     placeholder = { Text(text = stringResource(R.string.insert_your_username)) },
                     onValueChange = { user = it }, // Instant synchronize
-                    label = { Text(text = "Username") }
-                )
+                    label = { Text(text = "Username") })
             }
         }
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .size(20.dp))
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)) {
-            Text(
-                text = "Password:",
-                fontSize = 20.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(20.dp)
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
             OutlinedTextField(
                 value = pass,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { pass = it }, // Instant synchronize
+                placeholder = { Text(text = stringResource(R.string.insert_your_password)) },
                 label = { Text(text = "Enter your password") },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
         }
 
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .size(80.dp))
-        ElevatedButton(onClick = {
-            val isValid = LoginValidation.validateUser(user, pass)
-            if (isValid) {
-                Toast.makeText(context, "BIENVENIDO", Toast.LENGTH_LONG).show()
-                onSuccess(user) //Le pasamos el nombre de la ruta a la que deseamos ir.
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(80.dp)
+        )
+        ElevatedButton(
+            onClick = {
+                val isValid = LoginValidation.validateUser(user, pass)
+                if (isValid) {
+                    Toast.makeText(context, "BIENVENIDO", Toast.LENGTH_LONG).show()
+                    onSuccess(user) //Le pasamos el nombre de la ruta a la que deseamos ir.
 
-            } else {
-                Toast.makeText(context, "CORREO O CONTRASEÑA INCORRECTA", Toast.LENGTH_LONG).show()
-            }
-        },
+                } else {
+                    Toast.makeText(context, "CORREO O CONTRASEÑA INCORRECTA", Toast.LENGTH_LONG)
+                        .show()
+                }
+            },
             colors = ButtonDefaults.elevatedButtonColors(containerColor = Color.Black),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)
         ) {
             Text(
-                text = "LOG IN",
-                color = Color.White,
-                fontSize = 20.sp
+                text = "LOG IN", color = Color.White, fontSize = 20.sp
             )
         }
     }

@@ -17,16 +17,16 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navController,
-                startDestination = "Login" // Pantalla inicial
+                startDestination = Screen.Login.route // Pantalla inicial
             ) {
-                composable("Login") {
+                composable(Screen.Login.route) {
                     LoginScreen(
                         onSuccess = { userName ->
-                            navController.navigate("Chat")
+                            navController.navigate(Screen.Chat.route)
                         }
                     )
                 }
-                composable("Chat") { ChatScreen() }
+                composable(Screen.Chat.route) { ChatScreen() }
             }
         }
     }
