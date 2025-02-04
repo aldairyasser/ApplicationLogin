@@ -6,4 +6,4 @@ import kotlinx.serialization.Serializable
 object Login
 
 @Serializable
-data class Chat (var user : User)
+data class Chat (var user : String)
