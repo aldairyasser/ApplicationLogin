@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,18 +18,15 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navController,
-                startDestination = Screen.Login.route // Pantalla inicial
+                startDestination = Login // Pantalla inicial
             ) {
-                composable(Screen.Login.route) {
-                    LoginScreen(
-                        onSuccess = { user ->
-                            navController.navigate(Screen.Chat.nameChat(user))
-                        }
-                    )
+                composable<Login> {
+                    LoginScreen { user -> navController.navigate(Chat(user = user))
+                    }
                 }
-                composable(Screen.Chat.route) { backStackEntry ->
-                    val user = backStackEntry.arguments?.getString("user") ?: "Usuario"
-                    ChatScreen(user = user)
+                composable<Chat> {
+                    val username = it.toRoute<Chat>()
+                    ChatScreen(username.user)
                 }
             }
         }
