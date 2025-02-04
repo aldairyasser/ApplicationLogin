@@ -54,7 +54,7 @@ fun TopBar() {
     TopAppBar(
         title = {
             Text(
-                text = "LOG IN",
+                text = "Log in",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 15.dp),
@@ -140,11 +140,11 @@ fun ContentLogin(navigatetoChat: (user: String) -> Unit) {
             onClick = {
                 val isValid = LoginValidation.validateUser(pass)
                 if (isValid) {
-                    Toast.makeText(context, "BIENVENIDO", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Bienvenido", Toast.LENGTH_LONG).show()
                     navigatetoChat(user) //Le pasamos el nombre de la ruta a la que deseamos ir.
 
                 } else {
-                    Toast.makeText(context, "CORREO O CONTRASEÑA INCORRECTA", Toast.LENGTH_LONG)
+                    Toast.makeText(context, "Correo o contraseña incorrecta", Toast.LENGTH_LONG)
                         .show()
                 }
             },
@@ -154,7 +154,7 @@ fun ContentLogin(navigatetoChat: (user: String) -> Unit) {
                 .padding(horizontal = 32.dp)
         ) {
             Text(
-                text = "LOG IN", color = Color.White, fontSize = 20.sp
+                text = "Log in", color = Color.White, fontSize = 20.sp
             )
         }
     }
