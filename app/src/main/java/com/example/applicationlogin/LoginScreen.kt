@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -120,15 +121,7 @@ fun ContentLogin(navigatetoChat: (user: String) -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            OutlinedTextField(
-                value = pass,
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = { pass = it }, // Instant synchronize
-                placeholder = { Text(text = stringResource(R.string.insert_your_password)) },
-                label = { Text(text = "Enter your password") },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-            )
+            PasswordTextField(pass = pass, onPassChange = { pass = it })
         }
 
         Spacer(
@@ -142,7 +135,6 @@ fun ContentLogin(navigatetoChat: (user: String) -> Unit) {
                 if (isValid) {
                     Toast.makeText(context, "Bienvenido", Toast.LENGTH_LONG).show()
                     navigatetoChat(user) //Le pasamos el nombre de la ruta a la que deseamos ir.
-
                 } else {
                     Toast.makeText(context, "Correo o contraseña incorrecta", Toast.LENGTH_LONG)
                         .show()
@@ -158,4 +150,20 @@ fun ContentLogin(navigatetoChat: (user: String) -> Unit) {
             )
         }
     }
+}
+
+@Composable
+fun PasswordTextField(pass: String, onPassChange: (String) -> Unit) {
+    val passwordVisible by rememberSaveable { mutableStateOf(false) }
+
+    OutlinedTextField(
+        value = pass,
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        onValueChange = { onPassChange(it) }, // Actualiza la contraseña
+        placeholder = { Text(text = stringResource(R.string.insert_your_password)) },
+        label = { Text(text = "Enter your password") },
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+    )
 }

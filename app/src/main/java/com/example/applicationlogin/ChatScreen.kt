@@ -16,9 +16,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -39,20 +45,20 @@ import androidx.compose.ui.unit.sp
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ChatScreen(user :String) {
+fun ChatScreen(username: User) {
     Scaffold(
-        topBar = { TopBarChat(user) },
+        topBar = { TopBarChat(username) },
         content = { ContentChat() }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarChat(user: String) {
+fun TopBarChat(username: User) {
     TopAppBar(
         title = {
             Text(
-                text = "$user Chat",
+                text = "$username Chat",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 15.dp),
@@ -76,7 +82,7 @@ fun ContentChat() {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.LightGray),
-        verticalArrangement = Arrangement.SpaceAround
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Spacer(modifier = Modifier
             .fillMaxWidth()
@@ -88,7 +94,9 @@ fun ContentChat() {
                 .padding(16.dp)
         ) {
             items(messagesList) { msg ->
-                MessageBubble(msg)
+                MessageBubble(msg) {
+                    messagesList = messagesList - msg
+                }
             }
         }
 
@@ -135,7 +143,8 @@ fun ContentChat() {
 }
 
 @Composable
-fun MessageBubble(text: String) {
+fun MessageBubble(text: String, onDelete: () -> Unit) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -143,6 +152,30 @@ fun MessageBubble(text: String) {
             .background(Color.White, shape = RoundedCornerShape(8.dp))
             .padding(12.dp)
     ) {
-        Text(text = text, fontSize = 18.sp)
+        Row (modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = text, fontSize = 18.sp, modifier = Modifier.weight(1f))
+
+            Box {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Opciones")
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Eliminar") },
+                        onClick = {
+                            expanded = false
+                            onDelete()
+                        }
+                    )
+                }
+            }
+        }
     }
 }
