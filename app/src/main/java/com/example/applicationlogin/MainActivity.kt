@@ -22,8 +22,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 composable<Login> {
                     LoginScreen { user ->
-                         val username = User(user) //Creamos la clase User en vez del Srtring
-                        navController.navigate(Chat(username)) //Le pasamos la clase User creada
+                        navController.navigate(Chat(user = user)) //Le pasamos la clase User creada
                     }
                 }
                 composable<Chat> {

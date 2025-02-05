@@ -16,15 +16,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,7 +39,7 @@ import androidx.compose.ui.unit.sp
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ChatScreen(username: User) {
+fun ChatScreen(username: String) {
     Scaffold(
         topBar = { TopBarChat(username) },
         content = { ContentChat() }
@@ -54,7 +48,7 @@ fun ChatScreen(username: User) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarChat(username: User) {
+fun TopBarChat(username: String) {
     TopAppBar(
         title = {
             Text(
@@ -94,9 +88,7 @@ fun ContentChat() {
                 .padding(16.dp)
         ) {
             items(messagesList) { msg ->
-                MessageBubble(msg) {
-                    messagesList = messagesList - msg
-                }
+                MessageBubble(msg)
             }
         }
 
@@ -143,8 +135,7 @@ fun ContentChat() {
 }
 
 @Composable
-fun MessageBubble(text: String, onDelete: () -> Unit) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
+fun MessageBubble(text: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -158,24 +149,6 @@ fun MessageBubble(text: String, onDelete: () -> Unit) {
         ) {
             Text(text = text, fontSize = 18.sp, modifier = Modifier.weight(1f))
 
-            Box {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Opciones")
-                }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Eliminar") },
-                        onClick = {
-                            expanded = false
-                            onDelete()
-                        }
-                    )
-                }
-            }
         }
     }
 }
