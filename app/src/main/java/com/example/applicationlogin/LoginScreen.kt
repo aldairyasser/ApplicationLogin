@@ -41,10 +41,11 @@ import androidx.compose.ui.unit.sp
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(navigatetoChat: (user: User) -> Unit) {
+fun LoginScreen(navigatetoChat: (user:User) -> Unit) {
     Scaffold(topBar = { TopBar() }, content = {
         ContentLogin(navigatetoChat = {user ->
-            navigatetoChat(user)
+            val username = User(user)
+            navigatetoChat(username)
         })
     })
 }
@@ -69,7 +70,7 @@ fun TopBar() {
 }
 
 @Composable
-fun ContentLogin(navigatetoChat: (user: User) -> Unit) {
+fun ContentLogin(navigatetoChat: (user: String) -> Unit) {
     var user by rememberSaveable { mutableStateOf("") }
     var pass by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
@@ -134,8 +135,7 @@ fun ContentLogin(navigatetoChat: (user: User) -> Unit) {
                 val isValid = LoginValidation.validateUser(pass)
                 if (isValid) {
                     Toast.makeText(context, "Bienvenido", Toast.LENGTH_LONG).show()
-                    val username = User(user)
-                    navigatetoChat(username) //Le pasamos la clase User
+                    navigatetoChat(user) //Le pasamos el String user
                 } else {
                     Toast.makeText(context, "Correo o contraseña incorrecta", Toast.LENGTH_LONG)
                         .show()

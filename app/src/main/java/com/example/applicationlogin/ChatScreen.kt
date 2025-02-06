@@ -39,20 +39,20 @@ import androidx.compose.ui.unit.sp
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ChatScreen(username: User) {
+fun ChatScreen(user: User) {
     Scaffold(
-        topBar = { TopBarChat(username) },
+        topBar = { TopBarChat(user) },
         content = { ContentChat() }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarChat(username: User) {
+fun TopBarChat(user: User) {
     TopAppBar(
         title = {
             Text(
-                text = "${username.name} Chat",
+                text = "${user.name} Chat",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 15.dp),

@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import kotlin.reflect.typeOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +26,11 @@ class MainActivity : ComponentActivity() {
                         navController.navigate(Chat(user)) //Le pasamos la clase User creada
                     }
                 }
-                composable<Chat> {
-                    val username = it.toRoute<Chat>()
+                composable<Chat>(
+                    typeMap = mapOf(typeOf<User>() to UserType)
+                )
+                { backStackEntry ->
+                    val username : Chat = backStackEntry.toRoute()
                     ChatScreen(username.user)
                 }
             }
