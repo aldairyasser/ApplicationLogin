@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +43,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun LoginScreen(navigatetoChat: (user: User) -> Unit) {
     Scaffold(topBar = { TopBar() }, content = {
-        ContentLogin(navigatetoChat = { user ->
+        ContentLogin(navigatetoChat = {user ->
             navigatetoChat(user)
         })
     })
@@ -120,16 +121,7 @@ fun ContentLogin(navigatetoChat: (user: User) -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            OutlinedTextField(
-                value = pass,
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                onValueChange = {pass = it}, // Actualiza la contraseña
-                placeholder = { Text(text = stringResource(R.string.insert_your_password)) },
-                label = { Text(text = "Enter your password") },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-            )
+            PasswordTextField(pass = pass, onPassChange = { pass = it })
         }
 
         Spacer(
@@ -142,8 +134,8 @@ fun ContentLogin(navigatetoChat: (user: User) -> Unit) {
                 val isValid = LoginValidation.validateUser(pass)
                 if (isValid) {
                     Toast.makeText(context, "Bienvenido", Toast.LENGTH_LONG).show()
-                    val user = User( username = user )
-                    navigatetoChat(user) //Le pasamos la clase User
+                    val username = User(user)
+                    navigatetoChat(username) //Le pasamos la clase User
                 } else {
                     Toast.makeText(context, "Correo o contraseña incorrecta", Toast.LENGTH_LONG)
                         .show()
@@ -161,4 +153,18 @@ fun ContentLogin(navigatetoChat: (user: User) -> Unit) {
     }
 }
 
+@Composable
+fun PasswordTextField(pass: String, onPassChange: (String) -> Unit) {
+    val passwordVisible by rememberSaveable { mutableStateOf(false) }
 
+    OutlinedTextField(
+        value = pass,
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        onValueChange = { onPassChange(it) }, // Actualiza la contraseña
+        placeholder = { Text(text = stringResource(R.string.insert_your_password)) },
+        label = { Text(text = "Enter your password") },
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+    )
+}
