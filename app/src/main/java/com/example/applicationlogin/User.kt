@@ -3,7 +3,4 @@ package com.example.applicationlogin
 import kotlinx.serialization.Serializable
 
 @Serializable
-object Login
-
-@Serializable
-data class Chat( var name : User )
+data class User(val username: String)
