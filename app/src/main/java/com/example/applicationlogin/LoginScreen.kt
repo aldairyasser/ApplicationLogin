@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,10 +41,11 @@ import androidx.compose.ui.unit.sp
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(onSuccess: (user: String) -> Unit) {
+fun LoginScreen(navigatetoChat: (user:User) -> Unit) {
     Scaffold(topBar = { TopBar() }, content = {
-        ContentLogin(onSuccess = {
-            onSuccess(it)
+        ContentLogin(navigatetoChat = {user ->
+            val username = User(user)
+            navigatetoChat(username)
         })
     })
 }
@@ -54,7 +56,7 @@ fun TopBar() {
     TopAppBar(
         title = {
             Text(
-                text = "LOG IN",
+                text = "Log in",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 15.dp),
@@ -68,7 +70,7 @@ fun TopBar() {
 }
 
 @Composable
-fun ContentLogin(onSuccess: (user: String) -> Unit) {
+fun ContentLogin(navigatetoChat: (user: String) -> Unit) {
     var user by rememberSaveable { mutableStateOf("") }
     var pass by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
@@ -120,15 +122,7 @@ fun ContentLogin(onSuccess: (user: String) -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            OutlinedTextField(
-                value = pass,
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = { pass = it }, // Instant synchronize
-                placeholder = { Text(text = stringResource(R.string.insert_your_password)) },
-                label = { Text(text = "Enter your password") },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-            )
+            PasswordTextField(pass = pass, onPassChange = { pass = it })
         }
 
         Spacer(
@@ -140,11 +134,10 @@ fun ContentLogin(onSuccess: (user: String) -> Unit) {
             onClick = {
                 val isValid = LoginValidation.validateUser(pass)
                 if (isValid) {
-                    Toast.makeText(context, "BIENVENIDO", Toast.LENGTH_LONG).show()
-                    onSuccess(user) //Le pasamos el nombre de la ruta a la que deseamos ir.
-
+                    Toast.makeText(context, "Bienvenido", Toast.LENGTH_LONG).show()
+                    navigatetoChat(user) //Le pasamos el String user
                 } else {
-                    Toast.makeText(context, "CORREO O CONTRASEÑA INCORRECTA", Toast.LENGTH_LONG)
+                    Toast.makeText(context, "Correo o contraseña incorrecta", Toast.LENGTH_LONG)
                         .show()
                 }
             },
@@ -154,8 +147,24 @@ fun ContentLogin(onSuccess: (user: String) -> Unit) {
                 .padding(horizontal = 32.dp)
         ) {
             Text(
-                text = "LOG IN", color = Color.White, fontSize = 20.sp
+                text = "Log in", color = Color.White, fontSize = 20.sp
             )
         }
     }
+}
+
+@Composable
+fun PasswordTextField(pass: String, onPassChange: (String) -> Unit) {
+    val passwordVisible by rememberSaveable { mutableStateOf(false) }
+
+    OutlinedTextField(
+        value = pass,
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        onValueChange = { onPassChange(it) }, // Actualiza la contraseña
+        placeholder = { Text(text = stringResource(R.string.insert_your_password)) },
+        label = { Text(text = "Enter your password") },
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+    )
 }

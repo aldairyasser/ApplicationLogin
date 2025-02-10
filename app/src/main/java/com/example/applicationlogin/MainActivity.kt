@@ -1,5 +1,6 @@
 package com.example.applicationlogin
 
+import ChatScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,6 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import kotlin.reflect.typeOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,18 +20,19 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navController,
-                startDestination = Screen.Login.route // Pantalla inicial
+                startDestination = Login // Pantalla inicial
             ) {
-                composable(Screen.Login.route) {
-                    LoginScreen(
-                        onSuccess = { user ->
-                            navController.navigate(Screen.Chat.nameChat(user))
-                        }
-                    )
+                composable<Login> {
+                    LoginScreen { user ->
+                        navController.navigate(Chat(user)) //Le pasamos la clase User creada
+                    }
                 }
-                composable(Screen.Chat.route) { backStackEntry ->
-                    val user = backStackEntry.arguments?.getString("user") ?: "Usuario"
-                    ChatScreen(user = user)
+                composable<Chat>(
+                    typeMap = mapOf(typeOf<User>() to UserType)
+                )
+                { backStackEntry ->
+                    val username : Chat = backStackEntry.toRoute()
+                    ChatScreen(username.user)
                 }
             }
         }
