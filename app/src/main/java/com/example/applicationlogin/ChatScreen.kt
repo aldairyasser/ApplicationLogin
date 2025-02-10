@@ -3,6 +3,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,10 +24,10 @@ import com.example.applicationlogin.User
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(user: User) {
-    val messagesListState = remember { mutableStateListOf<String>() }
-    var message by remember { mutableStateOf("") }
-    var selectedMessageIndex by remember { mutableStateOf(-1) }
-    var showBottomSheet by remember { mutableStateOf(false) }
+    val messagesListState = remember { mutableStateListOf<String>() } //Para alamacenar los mensajes
+    var message by remember { mutableStateOf("") } // Los mensajes
+    var selectedMessageIndex by remember { mutableStateOf(-1) } // Se inicializa en 0 para indicar que no hay ningún mensaje seleccionado por defecto
+    var showBottomSheet by remember { mutableStateOf(false) } // Para mostrar el bottom sheet, el cual empieza en false
 
     Scaffold(
         topBar = { TopBarChat(user) },
@@ -42,9 +43,9 @@ fun ChatScreen(user: User) {
                 LazyColumn(
                     modifier = Modifier.weight(1f).padding(16.dp)
                 ) {
-                    items(messagesListState) { msg ->
-                        MessageBubble(msg, onMoreOptionsClick = { index ->
-                            selectedMessageIndex = index
+                    itemsIndexed(messagesListState) {index, msg -> //Utilizo itemIndex para que me de el índice correcto.
+                        MessageBubble(msg, onMoreOptionsClick = {
+                            selectedMessageIndex = index // Guardamos el índice del mensaje seleccionado
                             showBottomSheet = true
                         })
                     }
@@ -94,7 +95,7 @@ fun ChatScreen(user: User) {
         }
     )
 
-    // Bottom Sheet to delete message
+    // Bottom Sheet para eliminar el texto
     if (showBottomSheet) {
         ModalBottomSheet(onDismissRequest = { showBottomSheet = false }) {
             Column(
@@ -108,11 +109,12 @@ fun ChatScreen(user: User) {
 
                 ElevatedButton(
                     onClick = {
-                        // Eliminar mensaje
-                        if (selectedMessageIndex >= 0) {
+                        // Verificar que el índice sea válido antes de eliminar
+                        if (selectedMessageIndex in messagesListState.indices) {
                             messagesListState.removeAt(selectedMessageIndex)
                         }
                         showBottomSheet = false
+                        selectedMessageIndex = -1 // Restablecer el índice después de eliminar
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                 ) {
@@ -124,7 +126,7 @@ fun ChatScreen(user: User) {
 }
 
 @Composable
-fun MessageBubble(message: String, onMoreOptionsClick: (Int) -> Unit) {
+fun MessageBubble(message: String, onMoreOptionsClick: () -> Unit) { //Le pasamos los parametro creados para mostrar el mensaje y para darle click a las opciones
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -138,13 +140,13 @@ fun MessageBubble(message: String, onMoreOptionsClick: (Int) -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = message,
+                text = message,//Mostramos el mensaje escrito
                 fontSize = 18.sp,
                 modifier = Modifier.weight(1f)
             )
 
             // Tres puntos verticales para el menú de opciones
-            IconButton(onClick = { onMoreOptionsClick.invoke(0) }) {
+            IconButton(onClick = { onMoreOptionsClick.invoke() }) { //Incluimos el icono de las opciones
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = "Opciones"
